@@ -53,6 +53,15 @@ def check_cert():
               help='Folder that contains the TRMT files; the latest will be picked automatically.')
 @click.option('-v', '--verbose', is_flag=True, help='Outputs debug messages')
 def main(mizfile, output, latest, verbose):
+    from src.esme.miz import Miz
+
+    with Miz(r'C:\Users\bob\Saved Games\DCS\Missions\132nd\TRMT_2.4.0.86.miz') as miz:
+        mission = miz.mission
+
+    print(mission)
+
+    exit(0)
+
     if verbose:
         from src.utils.custom_logging import CH
         CH.setLevel(DEBUG)
