@@ -53,12 +53,15 @@ def check_cert():
               help='Folder that contains the TRMT files; the latest will be picked automatically.')
 @click.option('-v', '--verbose', is_flag=True, help='Outputs debug messages')
 def main(mizfile, output, latest, verbose):
+
     from src.esme.miz import Miz
 
     with Miz(r'C:\Users\bob\Saved Games\DCS\Missions\132nd\TRMT_2.4.0.86.miz') as miz:
         mission = miz.mission
+        miz.zip()
 
-    print(mission)
+    for client in mission.get_clients_groups():
+        print(client.group_name)
 
     exit(0)
 

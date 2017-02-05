@@ -205,6 +205,12 @@ class AbstractMissionObject(Logged):
                 return group
         return None
 
+    def get_clients_groups(self):
+        for group in self.groups:
+            assert isinstance(group, Group)
+            if group.group_is_client_group:
+                yield group
+
     def get_group_by_name(self, group_name):
         validator.str.validate(group_name, 'get_group_by_name')
         for group in self.groups:
@@ -1535,9 +1541,9 @@ class Miz(Logged):
             raise
         try:
             self.logger.debug('overwriting mission file')
-            with open(self.mission_file_path, mode="w", encoding='iso8859_15') as _f:
+            with open(self.mission_file_path, mode="w", encoding='iso8859_15', newline='') as _f:
                 _f.write('mission = ')
-                raw_text = re_sub(RE_SPACE_AFTER_EQUAL_SIGN, "= \n", raw_text)
+                # raw_text = re_sub(RE_SPACE_AFTER_EQUAL_SIGN, "= \n", raw_text)
                 _f.write(raw_text)
         except:
             self.logger.exception('error while writing mission file: {}'.format(self.mission_file_path))
@@ -1554,9 +1560,9 @@ class Miz(Logged):
             raise
         try:
             self.logger.debug('overwriting mission file')
-            with open(self.ln10_file_path, mode="w") as _f:
+            with open(self.ln10_file_path, mode="w", encoding='iso8859_15', newline='') as _f:
                 _f.write('dictionary = ')
-                raw_text = re_sub(RE_SPACE_AFTER_EQUAL_SIGN, "= \n", raw_text)
+                # raw_text = re_sub(RE_SPACE_AFTER_EQUAL_SIGN, "= \n", raw_text)
                 _f.write(raw_text)
         except:
             self.logger.exception('error while writing ln10 file: {}'.format(self.ln10_file_path))

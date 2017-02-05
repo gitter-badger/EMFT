@@ -60,7 +60,7 @@ class SLPP:
         if not text or type(text) is not str:
             raise SLPPErrors.ParsingError(ERRORS['unexp_type_str'])
         # FIXME: only short comments removed
-        reg = re.compile('--.*$', re.M)
+        reg = re.compile(' --.*$', re.M)
         text = reg.sub('', text)
         self.text = text
         self.at, self.ch, self.depth = 0, '', 0
@@ -79,9 +79,14 @@ class SLPP:
             LOGGER.error('missing object to encode')  # TODO manage error
             return
         self.depth = 0
-        return self.__encode(obj)
+        s = self.__encode(obj)
+        st = re.compile(r'\} -- end of \[')
+        s = st.sub('}, -- end of [', s)
+        ed = re.compile(r'\],')
+        s = ed.sub(']', s)
+        return s
 
-    def __encode(self, obj):
+    def __encode(self, obj, dict_name=None):
         s = ''
         tab = self.tab
         newline = self.newline
@@ -103,9 +108,9 @@ class SLPP:
             if isinstance(obj, dict):
                 s += (',%s' % newline).join([dp + '[{}] ={}{}'.format(k,
                                                                       '' if isinstance(v, (list, tuple, dict)) else ' ',
-                                                                      self.__encode(v)) if type(
+                                                                      self.__encode(v, k)) if type(
                     k) is int else dp + '["{}"] ={}{}'.format(k, '' if isinstance(v, (list, tuple, dict)) else ' ',
-                                                              self.__encode(v))
+                                                              self.__encode(v, k))
                                              for k, v in obj.items()])
             else:
                 s += (',%s' % newline).join([dp + self.__encode(el) for el in obj])
@@ -113,6 +118,15 @@ class SLPP:
             if len(obj) > 0:
                 s += ','
             s += "%s%s}" % (newline, tab * self.depth)
+        if isinstance(obj, dict):
+            try:
+                int(dict_name)
+                s += ' -- end of [{}]'.format(dict_name)
+            except:
+                if dict_name is None:
+                    s += ' -- end of mission'
+                else:
+                    s += ' -- end of ["{}"]'.format(dict_name)
         return s
 
     # noinspection PyMissingOrEmptyDocstring
@@ -157,7 +171,7 @@ class SLPP:
             while self.next_chr():
                 if self.ch == end:
                     self.next_chr()
-                    if start != "[" or self.ch == ']':
+                    if start != '[' or self.ch == ']':
                         return s
                 if self.ch == '\\' and start == end:
                     self.next_chr()
