@@ -5,7 +5,7 @@ from collections import OrderedDict
 import mpmath
 from src.utils.custom_logging import make_logger
 
-LOGGER = make_logger('slpp')
+LOGGER = make_logger(__name__)
 
 ERRORS = {
     'unexp_type_str'    : 'decoding error: string expected',
@@ -17,23 +17,23 @@ ERRORS = {
 }
 
 
-class SLPPErrors:
-    """Container class for SLPP exceptions"""
+class SLTPErrors:
+    """Container class for SLTP exceptions"""
 
-    class BaseSLPPError(Exception):
-        """Base exception for SLPP module"""
+    class BaseSLTPError(Exception):
+        """Base exception for SLTP module"""
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-    class ParsingError(BaseSLPPError):
+    class ParsingError(BaseSLTPError):
         """Error during parsing"""
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
 
-class SLPP:
+class SLTP:
     """Simple Lua Python Parser"""
 
     def __init__(self):
@@ -58,7 +58,7 @@ class SLPP:
         """
         LOGGER.debug("decoding text to dictionnary")
         if not text or type(text) is not str:
-            raise SLPPErrors.ParsingError(ERRORS['unexp_type_str'])
+            raise SLTPErrors.ParsingError(ERRORS['unexp_type_str'])
         # FIXME: only short comments removed
         reg = re.compile(' --.*$', re.M)
         text = reg.sub('', text)
@@ -260,7 +260,7 @@ class SLPP:
             _n = self.ch
             self.next_chr()
             if not self.ch or not self.ch.isdigit():
-                raise SLPPErrors.ParsingError(err)
+                raise SLTPErrors.ParsingError(err)
             return _n
 
         n = ''
@@ -280,10 +280,10 @@ class SLPP:
                     n += self.ch
                     self.next_chr()
                     if not self.ch or self.ch not in ('+', '-'):
-                        raise SLPPErrors.ParsingError(ERRORS['mfnumber_sci'])
+                        raise SLTPErrors.ParsingError(ERRORS['mfnumber_sci'])
                     n += next_digit(ERRORS['mfnumber_sci'])
                     n += self.digit()
-        except SLPPErrors.ParsingError as e:
+        except SLTPErrors.ParsingError as e:
             print(e)
             return 0
         try:
@@ -310,6 +310,4 @@ class SLPP:
         return n
 
 
-slpp = SLPP()
-
-__all__ = ['slpp']
+sltp = SLTP()

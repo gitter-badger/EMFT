@@ -11,7 +11,7 @@ from zipfile import ZipFile, BadZipFile, ZipInfo
 from itertools import chain
 # Own imports
 # from ui.globals import
-from src.slpp.slpp import SLPP
+from src.sltp.sltp import SLTP
 from src.utils.custom_logging import make_logger, Logged
 # noinspection PyUnresolvedReferences - keep it ! inverse of gmtime =)
 from calendar import timegm
@@ -1478,7 +1478,7 @@ class Miz(Logged):
         return abspath(join(self.temp_dir_path, './l10n/DEFAULT/dictionary')).replace('\\', '/')
 
     def decode_mission(self, ln10):
-        parser = SLPP()
+        parser = SLTP()
         try:
             self.logger.debug('parsing mission lua table into dictionary')
             with open(self.mission_file_path, encoding='iso8859_15') as _f:
@@ -1490,7 +1490,7 @@ class Miz(Logged):
     def decode_ln10(self):
         self.logger.debug('reading ln10 dictionary at: {}'.format(self.ln10_file_path))
         try:
-            parser = SLPP()
+            parser = SLTP()
             with open(self.ln10_file_path) as _f:
                 self.__l10n = parser.decode("\n".join(_f.readlines()[1:]))
         except:
@@ -1532,7 +1532,7 @@ class Miz(Logged):
 
     def __encode_mission(self):
         self.logger.debug('writing mission dictionary to mission file: {}'.format(self.mission_file_path))
-        parser = SLPP()
+        parser = SLTP()
         try:
             self.logger.debug('encoding dictionary to lua table')
             raw_text = parser.encode(self.__mission.d)
@@ -1551,7 +1551,7 @@ class Miz(Logged):
 
     def __encode_ln10(self):
         self.logger.debug('writing ln10 to: {}'.format(self.ln10_file_path))
-        parser = SLPP()
+        parser = SLTP()
         try:
             self.logger.debug('encoding dictionary to lua table')
             raw_text = parser.encode(self.l10n)
