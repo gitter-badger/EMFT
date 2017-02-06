@@ -45,6 +45,7 @@ class SLTP:
         self.depth = 0
         self.space = re.compile('\s', re.M)
         self.alnum = re.compile('\w', re.M)
+        self.line_end = re.compile(r'^(?P<intro>[ \t]*\})(?P<comment> -- end of \[.*\]),$')
         self.newline = '\n'
         self.tab = '\t'
         self.tab = '    '
@@ -80,11 +81,15 @@ class SLTP:
             return
         self.depth = 0
         s = self.__encode(obj)
-        st = re.compile(r'\} -- end of \[')
-        s = st.sub('}, -- end of [', s)
-        ed = re.compile(r'\],')
-        s = ed.sub(']', s)
-        return s
+        lines = s.split(self.newline)
+        out = []
+        for line in lines:
+            m = self.line_end.match(line)
+            if m:
+                out.append(''.join([m.group('intro'),',',m.group('comment'),]))
+            else:
+                out.append(line)
+        return self.newline.join(out)
 
     def __encode(self, obj, dict_name=None):
         s = ''
