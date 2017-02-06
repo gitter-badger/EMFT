@@ -2,18 +2,20 @@
 """Simple Lua Python Parser"""
 import re
 from collections import OrderedDict
+
 import mpmath
+
 from src.utils.custom_logging import make_logger
 
 LOGGER = make_logger(__name__)
 
 ERRORS = {
-    'unexp_type_str'    : 'decoding error: string expected',
-    'unexp_end_string'  : 'Unexpected end of string while parsing Lua string.',
-    'unexp_end_table'   : 'Unexpected end of table while parsing Lua string.',
-    'mfnumber_minus'    : 'Malformed number (no digits after initial minus).',
+    'unexp_type_str': 'decoding error: string expected',
+    'unexp_end_string': 'Unexpected end of string while parsing Lua string.',
+    'unexp_end_table': 'Unexpected end of table while parsing Lua string.',
+    'mfnumber_minus': 'Malformed number (no digits after initial minus).',
     'mfnumber_dec_point': 'Malformed number (no digits after decimal point).',
-    'mfnumber_sci'      : 'Malformed number (bad scientific format).',
+    'mfnumber_sci': 'Malformed number (bad scientific format).',
 }
 
 
@@ -86,7 +88,7 @@ class SLTP:
         for line in lines:
             m = self.line_end.match(line)
             if m:
-                out.append(''.join([m.group('intro'),',',m.group('comment'),]))
+                out.append(''.join([m.group('intro'), ',', m.group('comment'), ]))
             else:
                 out.append(line)
         return self.newline.join(out)
