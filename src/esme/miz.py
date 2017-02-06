@@ -1530,7 +1530,7 @@ class Miz(Logged):
         self.logger.debug('all files have been found, miz successfully unzipped')
         self.__unzipped = True
 
-    def __encode_mission(self):
+    def _encode_mission(self):
         self.logger.debug('writing mission dictionary to mission file: {}'.format(self.mission_file_path))
         parser = SLTP()
         try:
@@ -1549,7 +1549,7 @@ class Miz(Logged):
             self.logger.exception('error while writing mission file: {}'.format(self.mission_file_path))
             raise
 
-    def __encode_ln10(self):
+    def _encode_ln10(self):
         self.logger.debug('writing ln10 to: {}'.format(self.ln10_file_path))
         parser = SLTP()
         try:
@@ -1569,15 +1569,15 @@ class Miz(Logged):
             raise
 
     def zip(self):
-        self.__encode_mission()
-        self.__encode_ln10()
+        self._encode_mission()
+        self._encode_ln10()
         out_file = abspath('{}_ESME.miz'.format(self.miz_path[:-4])).replace('\\', '/')
         try:
             self.logger.debug('zipping mission into: {}'.format(out_file))
             with ZipFile(out_file, mode='w', compression=8) as _z:
                 for f in self.files_in_zip:
                     full_path = abspath(join(self.temp_dir_path, f)).replace('\\', '/')
-                    self.logger.debug("injecting in zip file: {}".format(full_path))
+                    self.logger.debug('injecting in zip file: {}'.format(full_path))
                     _z.write(full_path, arcname=f)
         except:
             self.logger.exception('error while zipping miz file')
