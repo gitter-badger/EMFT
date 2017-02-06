@@ -37,7 +37,7 @@ class SLTP:
     """Simple Lua Python Parser"""
 
     def __init__(self):
-        LOGGER.debug("instantiating parser")
+        LOGGER.debug('instantiating parser')
         self.text = ''
         self.ch = ''
         self.at = 0
@@ -56,7 +56,7 @@ class SLTP:
         :param text: string to decode
         :return: Ordered Dictionary
         """
-        LOGGER.debug("decoding text to dictionnary")
+        LOGGER.debug('decoding text to dictionnary')
         if not text or type(text) is not str:
             raise SLTPErrors.ParsingError(ERRORS['unexp_type_str'])
         # FIXME: only short comments removed
@@ -74,7 +74,7 @@ class SLTP:
         :param obj: object to encode
         :return: valid Lua string
         """
-        LOGGER.debug("encoding dictionary to text")
+        LOGGER.debug('encoding dictionary to text')
         if not obj:
             LOGGER.error('missing object to encode')  # TODO manage error
             return
@@ -104,7 +104,7 @@ class SLTP:
             )) == len(obj):
                 newline = tab = ''
             dp = tab * self.depth
-            s += "%s%s{%s" % (newline, tab * (self.depth - 1), newline if len(obj) > 0 else '')
+            s += '%s%s{%s' % (newline, tab * (self.depth - 1), newline if len(obj) > 0 else '')
             if isinstance(obj, dict):
                 s += (',%s' % newline).join([dp + '[{}] ={}{}'.format(k,
                                                                       '' if isinstance(v, (list, tuple, dict)) else ' ',
@@ -117,7 +117,7 @@ class SLTP:
             self.depth -= 1
             if len(obj) > 0:
                 s += ','
-            s += "%s%s}" % (newline, tab * self.depth)
+            s += '%s%s}' % (newline, tab * self.depth)
         if isinstance(obj, dict):
             try:
                 int(dict_name)
@@ -153,7 +153,7 @@ class SLTP:
             return
         if self.ch == '{':
             return self.object()
-        if self.ch == "[":
+        if self.ch == '[':
             self.next_chr()
         if self.ch in ['"', "'", '[']:
             return self.string(self.ch)
