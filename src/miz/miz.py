@@ -114,7 +114,6 @@ class Miz:
         logger.debug('reading Mission files from disk')
         self.decode_ln10()
         self.decode_mission(self.l10n)
-        self.__decoded = True
 
     def unzip(self):
         """Extracts MIZ file into temp dir"""
