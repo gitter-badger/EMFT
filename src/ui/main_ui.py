@@ -5,18 +5,18 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QTabWidget, QVBoxLayout, QWidget, QShortcut
 
 # noinspection PyProtectedMember
-from src import _global
+from src import global_
 from .base import Shortcut, VLayout, Widget
 from .itab import iTab
-from .main_ui_progress import MainUiProgress, MainUIProgressAdapter
-from .main_ui_threading import MainGuiThreading
+from .main_ui_progress import MainUiProgress
+from .main_ui_threading import MainUiThreading
 from .main_ui_interface import I
-from utils import Updater, make_logger, Progress
+from utils import make_logger
 
 logger = make_logger(__name__)
 
 
-class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
+class MainUi(QMainWindow, MainUiThreading, MainUiProgress):
 
     threading_queue = Queue()
 
@@ -24,6 +24,8 @@ class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
         # Fucking QMainWindow calls a general super().__init__ on every parent class, don't call them here !
         flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowCloseButtonHint
         flags = flags | Qt.WindowMinimizeButtonHint | Qt.WindowMaximizeButtonHint
+
+        self.helpers = {}
 
         QMainWindow.__init__(
             self,
@@ -55,14 +57,20 @@ class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
     def show_log_tab(self):
         self.tabs.setCurrentIndex(self.tabs.count() - 1)
 
-    def add_tab(self, tab: iTab):
+    def write_log(self, value: str):
+        self.helpers['write_log'](value)
+
+    def add_tab(self, tab: iTab, helpers: dict = None):
         self.tabs.addTab(tab, tab.tab_title)
+        if helpers:
+            for k in helpers.keys():
+                self.helpers[k] = getattr(tab, helpers[k])
 
     def show(self):
         self.setWindowTitle(
-            '{} v{} - {}'.format(_global.APP_SHORT_NAME,
-                                 _global.APP_VERSION,
-                                 _global.APP_RELEASE_NAME))
+            '{} v{} - {}'.format(global_.APP_SHORT_NAME,
+                                 global_.APP_VERSION,
+                                 global_.APP_RELEASE_NAME))
         self.setWindowState(self.windowState() & Qt.WindowMinimized | Qt.WindowActive)
         self.activateWindow()
         super(QMainWindow, self).show()
@@ -71,8 +79,8 @@ class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
 
     @staticmethod
     def exit(code=0):
-        if _global.QT_APP:
-            _global.QT_APP.exit(code)
+        if global_.QT_APP:
+            global_.QT_APP.exit(code)
 
     def closeEvent(self, event):
         self.exit()
@@ -84,11 +92,11 @@ def start_ui():
     from src.ui.tab_reorder import TabReorder
     from src.ui.tab_log import TabLog
     logger.debug('starting QtApp object')
-    _global.QT_APP = QApplication([])
-    _global.MAIN_UI = MainUi()
-    _global.MAIN_UI.add_tab(TabReorder())
-    _global.MAIN_UI.add_tab(TabLog())
-    _global.MAIN_UI.show()
+    global_.QT_APP = QApplication([])
+    global_.MAIN_UI = MainUi()
+    global_.MAIN_UI.add_tab(TabReorder())
+    global_.MAIN_UI.add_tab(TabLog(), helpers={'write_log': 'write'})
+    global_.MAIN_UI.show()
 
     # from utils.threadpool import ThreadPool
     # update_thread = ThreadPool(1, 'updater', True)
@@ -103,6 +111,7 @@ def start_ui():
     #     cancel_update_func=I.show)
     # updater.version_check('alpha')
 
-    # Progress().register_adapter(MainUIProgressAdapter())
+    from utils import Progress
+    Progress.register_adapter(I)
 
-    sys.exit(_global.QT_APP.exec())
+    sys.exit(global_.QT_APP.exec())

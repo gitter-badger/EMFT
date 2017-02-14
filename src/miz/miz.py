@@ -8,7 +8,7 @@ from zipfile import ZipFile, BadZipFile, ZipInfo
 from sltp import SLTP
 from utils import make_logger, Path
 
-from src._global import ENCODING
+from src.global_ import ENCODING
 from src.miz.mission import Mission
 
 logger = make_logger('miz')

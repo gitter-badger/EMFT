@@ -1,7 +1,7 @@
 # coding=utf-8
 
 import logging
-from src import _global
+from src import global_
 
 from PyQt5.QtWidgets import QPlainTextEdit
 
@@ -9,6 +9,7 @@ from src.cfg import Config
 from src.sentry import SENTRY
 from src.ui.base import VLayout, Combo, PushButton, HLayout
 from src.ui.itab import iTab
+from src.ui.main_ui_interface import I
 from utils import create_new_paste
 
 
@@ -79,11 +80,11 @@ class TabLog(iTab, logging.Handler):
     def emit(self, record: logging.LogRecord):
         self.records.append(record)
         if record.levelno >= self._min_lvl:
-            self.write(self.format(record))
+            I.write_log(self.format(record))
+            # self.write(self.format(record))
 
     def write(self, msg):
         self.log_text.appendPlainText(msg)
-        self.repaint()
 
     def combo_changed(self, new_value):
         Config().log_level = new_value
@@ -104,7 +105,7 @@ class TabLog(iTab, logging.Handler):
 
     def _clean(self):
         self.log_text.clear()
-        self.write('EMFT v{}'.format(_global.APP_VERSION))
+        self.write('EMFT v{}'.format(global_.APP_VERSION))
 
     def _set_log_level(self, log_level):
         self._clean()

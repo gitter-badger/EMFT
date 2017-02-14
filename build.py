@@ -10,7 +10,7 @@ from json import loads
 import certifi
 import click
 
-from src import _global
+from src import global_
 from utils.custom_logging import DEBUG, make_logger
 from utils.custom_path import Path
 
@@ -129,7 +129,7 @@ def build(env):
         '--paths', os.path.join(env, r'Lib\site-packages\PyQt5\Qt\bin'),
         '--log-level=WARN',
         '--add-data', '{};{}'.format(certifi.where(), '.'),
-        '--name', _global.APP_SHORT_NAME,
+        '--name', global_.APP_SHORT_NAME,
         '--distpath', './dist',
         '--windowed',
         './src/main.py',
@@ -138,7 +138,7 @@ def build(env):
     patch_exe(
         path_to_exe=Path('./dist/EMFT.exe'),
         version=version.get('SemVer'),
-        app_name=_global.APP_SHORT_NAME,
+        app_name=global_.APP_SHORT_NAME,
         wkdir=Path('.'),
         build=version.get('InformationalVersion'),
     )

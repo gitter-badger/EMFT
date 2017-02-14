@@ -5,7 +5,7 @@ if __name__ == '__main__':
     """Setup logging"""
     from utils.custom_logging import make_logger
     # noinspection PyProtectedMember
-    from src._global import PATH_LOG_FILE
+    from src.global_ import PATH_LOG_FILE
     logger = make_logger(__name__, log_file_path=PATH_LOG_FILE)
 
     """Say hello !"""

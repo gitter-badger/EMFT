@@ -7,11 +7,9 @@ from zipfile import ZipFile, ZipInfo, BadZipFile
 
 from natsort import natsorted
 
-from utils.custom_logging import make_logger
-from utils.custom_path import Path
-from utils.progress import Progress
+from utils import Progress, make_logger, Path
 from src.ui.main_ui_interface import I
-from src._global import ENCODING
+from src.global_ import ENCODING
 
 logger = make_logger(__name__)
 
@@ -172,7 +170,7 @@ class Miz:
             lines = f.readlines()
         start_length = len(lines)
         current_group = None
-        Progress().start(title='Reordering lua table', length=start_length)
+        Progress.start(title='Reordering lua table', length=start_length, label='')
         idx = 0
         t = time.time()
         while lines:
@@ -197,9 +195,9 @@ class Miz:
                 raise ValueError('PARSING ERROR: ', line)
             idx += 1
             if time.time() - t > 0.1:
-                Progress().value = idx
+                Progress.set_value(idx)
                 t = time.time()
-        Progress().done()
+        Progress.done()
         logger.info('writing results to: {}'.format(out_file.abspath()))
         with open(out_file.abspath(), encoding=ENCODING, mode='w') as f:
             f.write(current_group.__str__())

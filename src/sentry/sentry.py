@@ -9,7 +9,7 @@ import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
 
-from src import _global
+from src import global_
 from src.__version__ import __version__
 from src.sentry.sentry_context_provider import ISentryContextProvider
 from utils.custom_logging import make_logger
@@ -32,9 +32,9 @@ class Sentry(raven.Client, metaclass=Singleton):
     def set_context(self):
         self.tags_context(
             dict(
-                frozen=_global.FROZEN,
+                frozen=global_.FROZEN,
                 platform=sys.platform,
-                release_name=_global.APP_RELEASE_NAME,
+                release_name=global_.APP_RELEASE_NAME,
             )
         )
         try:
@@ -64,7 +64,7 @@ class Sentry(raven.Client, metaclass=Singleton):
 
     def captureException(self, exc_info=None, **kwargs):
         self.set_context()
-        if not _global.FROZEN:
+        if not global_.FROZEN:
             logger.error('crash report would have been sent')
             return
 

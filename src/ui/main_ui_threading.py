@@ -24,7 +24,7 @@ class MainGuiWorker(QObject):
             self.signal.emit(obj_name, func, args, kwargs)
 
 
-class MainGuiThreading:
+class MainUiThreading:
     """
     Encapsulates calls to the MainUi inside a Qt thread.
 

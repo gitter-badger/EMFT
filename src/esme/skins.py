@@ -3,7 +3,7 @@
 from os.path import abspath, isdir, join, islink, exists, basename
 from os import walk, listdir, readlink
 from utils.custom_logging import make_logger, Logged
-from src._global import ENCODING
+from src.global_ import ENCODING
 
 
 LOGGER = make_logger('skins')
