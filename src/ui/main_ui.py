@@ -98,18 +98,16 @@ def start_ui():
     global_.MAIN_UI.add_tab(TabLog(), helpers={'write_log': 'write'})
     global_.MAIN_UI.show()
 
-    # from utils.threadpool import ThreadPool
-    # update_thread = ThreadPool(1, 'updater', True)
-    # update_thread.queue_task()
-    # updater = Updater(
-    #     executable_name='EMFT.exe',
-    #     current_version=_global.APP_VERSION,
-    #     gh_user='132nd-etcher',
-    #     gh_repo='test',
-    #     asset_filename='EMFT.exe',
-    #     pre_update_func=I.hide,
-    #     cancel_update_func=I.show)
-    # updater.version_check('alpha')
+    from utils import Updater
+    updater = Updater(
+        executable_name='EMFT.exe',
+        current_version=global_.APP_VERSION,
+        gh_user='132nd-etcher',
+        gh_repo='test',
+        asset_filename='EMFT.exe',
+        pre_update_func=I.hide,
+        cancel_update_func=I.show)
+    updater.version_check('alpha')
 
     from utils import Progress
     Progress.register_adapter(I)
