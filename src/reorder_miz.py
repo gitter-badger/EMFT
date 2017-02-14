@@ -7,10 +7,11 @@ from zipfile import ZipFile, ZipInfo, BadZipFile
 
 from natsort import natsorted
 
-from src.utils.custom_logging import make_logger
-from src.utils.custom_path import Path
-from src.utils.progress import Progress
+from utils.custom_logging import make_logger
+from utils.custom_path import Path
+from utils.progress import Progress
 from src.ui.main_ui_interface import I
+from src._global import ENCODING
 
 logger = make_logger(__name__)
 
@@ -164,18 +165,16 @@ class Miz:
 
     @staticmethod
     def __reorder_lua_table(in_file: Path or str, out_file: Path or str = None):
-        logger.debug('{} -> {}'.format(in_file, out_file))
+        logger.debug('{} -> {}'.format(in_file, out_file or in_file))
         in_file = Path(in_file)
         out_file = Path(out_file) if out_file else Path(in_file)
-        with open(in_file.abspath(), encoding='iso8859_15') as f:
+        with open(in_file.abspath(), encoding=ENCODING) as f:
             lines = f.readlines()
         start_length = len(lines)
         current_group = None
-        Progress.start('Reordering lua table', len(lines))
+        Progress().start(title='Reordering lua table', length=start_length)
         idx = 0
         t = time.time()
-        # with click.progressbar(lines, label='Reordering: {}'.format(Path(in_file).name)) as _lines:
-            # with click.progressbar(length=len(lines), label='Reordering {}'.format(in_file)) as bar:
         while lines:
             line = lines.pop(0).rstrip()
             if re_obj_start.match(line):
@@ -198,19 +197,17 @@ class Miz:
                 raise ValueError('PARSING ERROR: ', line)
             idx += 1
             if time.time() - t > 0.1:
-                Progress.set_value(idx)
+                Progress().value = idx
                 t = time.time()
-                # bar.update(1)
-        Progress.done()
+        Progress().done()
         logger.info('writing results to: {}'.format(out_file.abspath()))
-        with open(out_file.abspath(), encoding='iso8859_15', mode='w') as f:
+        with open(out_file.abspath(), encoding=ENCODING, mode='w') as f:
             f.write(current_group.__str__())
             f.write('\n')
-        with open(out_file.abspath(), encoding='iso8859_15', mode='r') as f:
+        with open(out_file.abspath(), encoding=ENCODING, mode='r') as f:
             if not start_length == len(f.readlines()):
                 out_file.remove()
-                raise RuntimeError(
-                    'count does not match; there was an error during the re-ordering process (output file has been deleted).')
+                raise RuntimeError('count does not match; there was an error during the re-ordering process (output file has been deleted).')
 
     def wipe_temp_dir(self):
         """Removes all files & folders from temp_dir, wiping it clean"""

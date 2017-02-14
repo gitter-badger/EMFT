@@ -5,7 +5,7 @@ Easy to use validator for different values
 from os.path import exists
 from re import fullmatch as re_full_match
 
-from src.utils.custom_logging import make_logger
+from utils.custom_logging import make_logger
 
 LOGGER = make_logger(__name__)
 

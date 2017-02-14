@@ -8,16 +8,16 @@ from PyQt5.QtWidgets import QMainWindow, QTabWidget, QVBoxLayout, QWidget, QShor
 from src import _global
 from .base import Shortcut, VLayout, Widget
 from .itab import iTab
-from .main_ui_progress import MainUiProgress
+from .main_ui_progress import MainUiProgress, MainUIProgressAdapter
 from .main_ui_threading import MainGuiThreading
 from .main_ui_interface import I
-from src.utils.updater import Updater
-from src.utils.custom_logging import make_logger
+from utils import Updater, make_logger, Progress
 
 logger = make_logger(__name__)
 
 
 class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
+
     threading_queue = Queue()
 
     def __init__(self):
@@ -32,8 +32,6 @@ class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
         )
 
         self.resize(1024, 768)
-
-
 
         self.tabs = QTabWidget()
 
@@ -67,7 +65,7 @@ class MainUi(QMainWindow, MainGuiThreading, MainUiProgress):
                                  _global.APP_RELEASE_NAME))
         self.setWindowState(self.windowState() & Qt.WindowMinimized | Qt.WindowActive)
         self.activateWindow()
-        super(MainUi, self).show()
+        super(QMainWindow, self).show()
 
         self.raise_()
 
@@ -91,6 +89,20 @@ def start_ui():
     _global.MAIN_UI.add_tab(TabReorder())
     _global.MAIN_UI.add_tab(TabLog())
     _global.MAIN_UI.show()
-    updater = Updater(_global.APP_VERSION, '132nd-etcher', 'test', 'EMFT.exe', I.hide, I.show)
-    updater.version_check('alpha')
+
+    # from utils.threadpool import ThreadPool
+    # update_thread = ThreadPool(1, 'updater', True)
+    # update_thread.queue_task()
+    # updater = Updater(
+    #     executable_name='EMFT.exe',
+    #     current_version=_global.APP_VERSION,
+    #     gh_user='132nd-etcher',
+    #     gh_repo='test',
+    #     asset_filename='EMFT.exe',
+    #     pre_update_func=I.hide,
+    #     cancel_update_func=I.show)
+    # updater.version_check('alpha')
+
+    # Progress().register_adapter(MainUIProgressAdapter())
+
     sys.exit(_global.QT_APP.exec())

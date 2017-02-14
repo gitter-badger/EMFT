@@ -956,7 +956,7 @@ class RadiosWidget(AbstractWidget, qt_widget_radios.Ui_Form):
         self.table_radio1.setItemDelegateForColumn(1, self.radio1_delegate)
         try:
             radio2 = unit.get_radio_by_number(2)
-        except MizErrors.InvalidRadioForThisAircraft:
+        except TypeError:
             radio2_model = RadiosWidget.RadioTableModel([], headers, self.table_radio2)
             self.table_radio2.setModel(radio2_model)
             self.label_radio2.setText('')
@@ -1545,7 +1545,7 @@ class Gui(AbstractGui, qt_main_ui.Ui_MainWindow):
                     print(radio_preset._section_channels)
                     for channel, freq in radio_preset.channels:
                         print('{}: {}'.format(channel, freq))
-            except MizErrors.NoRadioPresetsError as e:
+            except TypeError as e:
                 self._msgbox_say('This unit does not have any radio preset: {}'.format(e.msg))
 
     def mizfile_loading(self):

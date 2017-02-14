@@ -11,8 +11,8 @@ import certifi
 import click
 
 from src import _global
-from src.utils.custom_logging import DEBUG, make_logger
-from src.utils.custom_path import Path
+from utils.custom_logging import DEBUG, make_logger
+from utils.custom_path import Path
 
 logger = make_logger(__name__)
 logger.setLevel(DEBUG)
@@ -132,7 +132,7 @@ def build(env):
         '--name', _global.APP_SHORT_NAME,
         '--distpath', './dist',
         '--windowed',
-        './main.py',
+        './src/main.py',
     ], logger=logger, cwd='.')
     logger.info('patching exe resources')
     patch_exe(

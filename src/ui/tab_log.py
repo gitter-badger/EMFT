@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import logging
+from src import _global
 
 from PyQt5.QtWidgets import QPlainTextEdit
 
@@ -8,6 +9,7 @@ from src.cfg import Config
 from src.sentry import SENTRY
 from src.ui.base import VLayout, Combo, PushButton, HLayout
 from src.ui.itab import iTab
+from utils import create_new_paste
 
 
 class TabLog(iTab, logging.Handler):
@@ -81,21 +83,28 @@ class TabLog(iTab, logging.Handler):
 
     def write(self, msg):
         self.log_text.appendPlainText(msg)
+        self.repaint()
 
     def combo_changed(self, new_value):
         Config().log_level = new_value
         self._set_log_level(new_value)
 
     def _send(self):
+        content = []
         for rec in self.records:
             assert isinstance(rec, logging.LogRecord)
-            SENTRY.add_crumb(rec.msg, 'LOG:{}'.format(rec.module), rec.levelname)
-        SENTRY.captureMessage('Logfile')
-        self.write('Log file sent; thank you !')
+            content.append(self.format(rec))
+            # SENTRY.add_crumb(rec.msg, 'LOG:{}'.format(rec.module), rec.levelname)
+        url = create_new_paste('\n'.join(content))
+        if url:
+            SENTRY.captureMessage('Logfile', extra={'log_url': url})
+            self.write('Log file sent; thank you !')
+        else:
+            self.write('Could not send log file')
 
     def _clean(self):
         self.log_text.clear()
-        self.write('Application is ready')
+        self.write('EMFT v{}'.format(_global.APP_VERSION))
 
     def _set_log_level(self, log_level):
         self._clean()

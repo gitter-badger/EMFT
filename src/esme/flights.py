@@ -2,9 +2,8 @@
 """
 Nope
 """
-from src.utils.custom_logging import make_logger, Logged
-from .miz import Miz, Group, FlyingUnit
-
+from src.miz.mission import Group
+from utils.custom_logging import make_logger, Logged
 
 LOGGER = make_logger('flights')
 

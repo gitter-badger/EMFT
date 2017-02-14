@@ -12,8 +12,8 @@ import raven.handlers.logging
 from src import _global
 from src.__version__ import __version__
 from src.sentry.sentry_context_provider import ISentryContextProvider
-from src.utils.custom_logging import make_logger
-from src.utils.singleton import Singleton
+from utils.custom_logging import make_logger
+from utils.singleton import Singleton
 
 logger = make_logger(__name__)
 

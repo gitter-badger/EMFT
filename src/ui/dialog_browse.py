@@ -2,7 +2,7 @@
 
 import typing
 
-from src.utils.custom_path import Path
+from utils.custom_path import Path
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QIcon
 

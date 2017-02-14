@@ -9,3 +9,8 @@ __pycache__
 /pyu-data/
 /build/
 /dist/
+/test/.cache/
+/test/coverage/
+/coverage.xml
+/.coverage
+/.cache/

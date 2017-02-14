@@ -2,7 +2,8 @@
 
 from os.path import abspath, isdir, join, islink, exists, basename
 from os import walk, listdir, readlink
-from custom_logging.custom_logging import make_logger, Logged
+from utils.custom_logging import make_logger, Logged
+from src._global import ENCODING
 
 
 LOGGER = make_logger('skins')
@@ -38,7 +39,7 @@ def gather_in_folders(list_of_folders):
                         desc_lua_path = join(root, 'description.lua')
                         skin_name = None
                         try:
-                            with open(desc_lua_path, encoding='iso8859_15') as _f:
+                            with open(desc_lua_path, encoding=ENCODING) as _f:
                                 for l in _f.readlines():
                                     if l[:5] == 'name=':
                                         skin_name = l[5:].rstrip().strip('"')

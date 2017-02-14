@@ -7,14 +7,14 @@ import webbrowser
 from PyQt5.QtWidgets import QLineEdit, QSpacerItem, QSizePolicy, QLabel
 from natsort import natsorted
 
-from src import miz
+from src import reorder_miz
 from src.cfg.cfg import Config
 from src.ui.base import GroupBox, HLayout, VLayout, PushButton, Radio
 from src.ui.dialog_browse import BrowseDialog
 from src.ui.itab import iTab
-from src.utils.custom_logging import make_logger
-from src.utils.custom_path import Path
-from src.utils.threadpool import ThreadPool
+from utils.custom_logging import make_logger
+from utils.custom_path import Path
+from utils.threadpool import ThreadPool
 
 try:
     import winreg
@@ -361,7 +361,7 @@ class TabReorder(iTab, _SingleLayout, _AutoLayout):
 
     def reorder_miz(self, miz_file, output_dir):
         self.pool.queue_task(
-            miz.reorder_miz_file,
+            reorder_miz.reorder_miz_file,
             [
                 miz_file,
                 output_dir,
