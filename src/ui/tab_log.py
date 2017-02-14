@@ -81,7 +81,6 @@ class TabLog(iTab, logging.Handler):
         self.records.append(record)
         if record.levelno >= self._min_lvl:
             I.write_log(self.format(record))
-            # self.write(self.format(record))
 
     def write(self, msg):
         self.log_text.appendPlainText(msg)
