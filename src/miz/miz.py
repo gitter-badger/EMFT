@@ -15,7 +15,7 @@ logger = make_logger('miz')
 
 
 class Miz:
-    def __init__(self, path_to_miz_file, temp_dir=None):
+    def __init__(self, path_to_miz_file, temp_dir=None, keep_temp_dir: bool = False):
 
         path_to_miz_file = Path(path_to_miz_file).abspath()
 
@@ -34,6 +34,7 @@ class Miz:
 
         self.__l10n = OrderedDict()
         self.__mission = Mission(OrderedDict(), self.__l10n)
+        self.__keep_temp_dir = keep_temp_dir
 
     def __enter__(self):
         logger.debug('instantiating new Mission object as a context')
@@ -48,8 +49,9 @@ class Miz:
             logger.error(exc_type, exc_val)
             return False
         else:
-            logger.debug('closing Mission object context')
-            self.remove_temp_dir()
+            if not self.__keep_temp_dir:
+                logger.debug('closing Mission object context')
+                self.remove_temp_dir()
 
     @property
     def is_unzipped(self) -> bool:
