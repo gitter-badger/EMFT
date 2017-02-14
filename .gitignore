@@ -14,3 +14,4 @@ __pycache__
 /coverage.xml
 /.coverage
 /.cache/
+/test/test_files/TRMT_*.miz
