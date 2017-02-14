@@ -57,8 +57,8 @@ class MainUi(QMainWindow, MainUiThreading, MainUiProgress):
     def show_log_tab(self):
         self.tabs.setCurrentIndex(self.tabs.count() - 1)
 
-    def write_log(self, value: str):
-        self.helpers['write_log'](value)
+    def write_log(self, value: str, color: str):
+        self.helpers['write_log'](value, color)
 
     def add_tab(self, tab: iTab, helpers: dict = None):
         self.tabs.addTab(tab, tab.tab_title)

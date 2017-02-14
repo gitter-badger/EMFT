@@ -29,7 +29,7 @@ class I(ProgressAdapter):
 
     @staticmethod
     @MainUiMethod
-    def write_log(value: str):
+    def write_log(value: str, color: str):
         """"""
 
     @staticmethod
