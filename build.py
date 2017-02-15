@@ -43,21 +43,21 @@ class __LogPipe(threading.Thread):
         os.close(self.fdWrite)
 
 
-def run_piped_process(args, logger, level=DEBUG, cwd=None, env=None, exe=None):
+def run_piped_process(args, logger_, level=DEBUG, cwd=None, env=None, exe=None):
     """
     Runs a standard process and pipes its output to a Python logger
     :param args: process and arguments ias a list
-    :param logger: logger to send data to
+    :param logger_: logger to send data to
     :param level: logging level, defaults to DEBUG
     :param cwd: working dir to spawn the process in (defaults to current)
     """
-    log_pipe = __LogPipe(logger, level)
+    log_pipe = __LogPipe(logger_, level)
 
-    logger.info('running: {} {} (in {})'.format(exe, ' '.join(args), cwd))
+    logger_.info('running: {} {} (in {})'.format(exe, ' '.join(args), cwd))
     with subprocess.Popen(args, stdout=log_pipe, stderr=log_pipe, cwd=cwd, env=env, executable=exe) as p:
         p.communicate()
         if p.returncode != 0:
-            logger.error('return code: {}'.format(p.returncode))
+            logger_.error('return code: {}'.format(p.returncode))
             raise RuntimeError('command failed: {}'.format(args))
         log_pipe.close()
 
@@ -96,7 +96,7 @@ def patch_exe(path_to_exe: str or Path,
         '/s', 'PrivateBuild', str(build),
         '/langid', '1033',
     ]
-    run_piped_process(cmd, logger=logger, cwd=wkdir)
+    run_piped_process(cmd, logger_=logger, cwd=wkdir)
 
 
 def pre_build(env):
@@ -108,7 +108,7 @@ def pre_build(env):
             '-o',
             './src/ui/qt_resource.py'
         ],
-        logger=logger,
+        logger_=logger,
     )
 
 
@@ -134,7 +134,7 @@ def build(env):
         '--distpath', './dist',
         '--windowed',
         './src/main.py',
-    ], logger=logger, cwd='.')
+    ], logger_=logger, cwd='.')
     logger.info('patching exe resources')
     patch_exe(
         path_to_exe=Path('./dist/EMFT.exe'),
