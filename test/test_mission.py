@@ -214,6 +214,16 @@ class TestMizValues:
         with Miz(TEST_FILE, str(tmpdir_factory.mktemp('test')), keep_temp_dir=True) as miz:
             yield miz
 
+    @pytest.fixture(scope='function', autouse=True)
+    def clean_up(self):
+
+        yield
+
+        try:
+            os.remove(OUT_FILE)
+        except FileNotFoundError:
+            pass
+
     def test_bullseye(self, miz):
         assert (11557, 371700) == miz.mission.red_coa.bullseye_position
         assert (-291014, 617414) == miz.mission.blue_coa.bullseye_position
