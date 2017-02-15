@@ -25,6 +25,7 @@ ruamel.yaml==0.11.10
 semver==2.7.5
 sip==4.19
 six==1.10.0
+git+https://github.com/132nd-etcher/sltp.git#egg=sltp
 urllib3==1.20
 git+https://github.com/132nd-etcher/utils.git#egg=utils
-git+https://github.com/132nd-etcher/sltp.git#egg=sltp
+wincertstore==0.2
