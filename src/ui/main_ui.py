@@ -98,6 +98,14 @@ def start_ui():
     global_.MAIN_UI.add_tab(TabLog(), helpers={'write_log': 'write'})
     global_.MAIN_UI.show()
 
+    def pre_update_hook():
+        if hasattr(sys, 'frozen'):
+            logger.warning('skipping update on script run')
+            return False
+        else:
+            I.hide()
+            return True
+
     from utils import Updater
     updater = Updater(
         executable_name='EMFT.exe',
@@ -105,7 +113,7 @@ def start_ui():
         gh_user='132nd-etcher',
         gh_repo='test',
         asset_filename='EMFT.exe',
-        pre_update_func=I.hide,
+        pre_update_func=pre_update_hook,
         cancel_update_func=I.show)
     updater.version_check('alpha')
 
