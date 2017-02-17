@@ -58,7 +58,16 @@ install:
 before_build:
   - ps: C:\ProgramData\chocolatey\bin\gitversion /l console /output buildserver /updateassemblyinfo /b (get-item env:APPVEYOR_REPO_BRANCH).Value
   - cmd: appveyor UpdateBuild -Version %GitVersion_InformationalVersion%.%APPVEYOR_BUILD_NUMBER%
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c test/.pytest"
+  - cmd: cd ..
+  - cmd: git clone --branch=master https://github.com/132nd-etcher/utils.git
+  - cmd: cd utils
+  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c tests/.pytest"
+  - cmd: cd ..
+  - cmd: git clone --branch=master https://github.com/132nd-etcher/sltp.git
+  - cmd: cd sltp
+  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c tests/.pytest"
+  - cmd: cd ..
+  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c tests/.pytest"
 #  - "%PYTHON%/Scripts/pip.exe install git+https://github.com/132nd-etcher/ocular.py.git"
 #  - "%PYTHON%/Scripts/ocular.exe --access-token %SCRUTINIZER%"
 #  - "%PYTHON%/Scripts/pip.exe install codacy-coverage"
