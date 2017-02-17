@@ -61,13 +61,14 @@ before_build:
   - cmd: cd ..
   - cmd: git clone --branch=master https://github.com/132nd-etcher/utils.git
   - cmd: cd utils
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c tests/.pytest"
+  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c utils/tests/.pytest"
   - cmd: cd ..
   - cmd: git clone --branch=master https://github.com/132nd-etcher/sltp.git
   - cmd: cd sltp
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c tests/.pytest"
+  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c sltp/tests/.pytest"
   - cmd: cd ..
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c tests/.pytest"
+  - cmd: cd %APPVEYOR_PROJECT_NAME%
+  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c test/.pytest"
 #  - "%PYTHON%/Scripts/pip.exe install git+https://github.com/132nd-etcher/ocular.py.git"
 #  - "%PYTHON%/Scripts/ocular.exe --access-token %SCRUTINIZER%"
 #  - "%PYTHON%/Scripts/pip.exe install codacy-coverage"
