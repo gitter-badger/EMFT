@@ -40,7 +40,7 @@ before_build:
   - cmd: appveyor UpdateBuild -Version %GitVersion_InformationalVersion%.%APPVEYOR_BUILD_NUMBER%
   - cmd: git clone --branch=master https://github.com/132nd-etcher/utils.git
   - pip install -r utils/requirements.txt
-  - "%PYTHON%/python -m pytest -c utils/utils/tests/.pytest"
+  - "%PYTHON%/python -m pytest"
 #  - cmd: cd ..
 #  - cmd: git clone --branch=master https://github.com/132nd-etcher/sltp.git
 #  - cmd: cd sltp
