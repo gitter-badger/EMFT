@@ -32,21 +32,21 @@ install:
   - choco install gitversion.portable -pre -y
   - choco install gitversion.portable -y
   - git clone --branch=master https://github.com/132nd-etcher/verpatch.git C:\projects\verpatch
+  - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
 
 
 before_build:
   - ps: C:\ProgramData\chocolatey\bin\gitversion /l console /output buildserver /updateassemblyinfo /b (get-item env:APPVEYOR_REPO_BRANCH).Value
   - cmd: appveyor UpdateBuild -Version %GitVersion_InformationalVersion%.%APPVEYOR_BUILD_NUMBER%
   - cmd: git clone --branch=master https://github.com/132nd-etcher/utils.git
-  - pip install -r requirements.txt
-  - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
+  - pip install -r utils/requirements.txt
   - "%PYTHON%/python -m pytest -c utils/utils/tests/.pytest"
 #  - cmd: cd ..
 #  - cmd: git clone --branch=master https://github.com/132nd-etcher/sltp.git
 #  - cmd: cd sltp
 #  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c sltp/tests/.pytest"
-  - cmd: cd ..
-  - cmd: cd %APPVEYOR_PROJECT_NAME%
+#  - cmd: cd ..
+#  - cmd: cd %APPVEYOR_PROJECT_NAME%
   - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c test/.pytest"
 #  - "%PYTHON%/Scripts/pip.exe install git+https://github.com/132nd-etcher/ocular.py.git"
 #  - "%PYTHON%/Scripts/ocular.exe --access-token %SCRUTINIZER%"
