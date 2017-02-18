@@ -10,19 +10,6 @@ environment:
     PYTHON: "C:\\Python35"
     PYTHON_VERSION: "3.5.2"
     GIT_PATH: "%GIT_DAEMON_PATH%"
-#    CODACY_PROJECT_TOKEN:
-#      secure: KufyrkuCy7as7DpyKxxqpyQKDX4Zvhyz1szpaoFTsqw90iRsE/wNkaFJIGj+wKsE
-#    SCRUTINIZER:
-#      secure: Z7n1eRV3NvHwwVK3ay0Ng6J09jJe/jNbq+2KJXZhDMBFVLrPjsIGyEyXOHgxLf8h3K7JYctoNOJ3yAnQ10cuGJY2amVbcrPCDzx0cUFe/g0=
-#    CODECLIMATE_REPO_TOKEN:
-#      secure: 5g9TZWYrT6Bq9BSvMcI408Nyh9OcoCHU+wFYXV7Q8nBg7lgRjH/ht1p2MQwJhsiEGHqw3Krk+h6a3w92725ldwxKOWrc8twh92gOPC0b4gs=
-#    COVERALLS_REPO_TOKEN:
-#      secure: 0Vci1JqP+KrmA8CjVryiikwJRk2W198nIHmPwk0W75zrz1b1Orz2+JrdgqLl5d3q
-    GH_PAGES_TOKEN:
-      secure: Wn4FCPRsCJUZy0bnpVt2ClZSp9XsrT0rocBBNDOFGPvmcCZq4fPNDWI1FfoO08zV
-    GH_MAIL:
-      secure: 9bVWUcCZXTNmCwwwQ9c/LY+ZxQWBTzzEJoojPZbp4Qk=
-
 
 matrix:
     fast_finish: true
@@ -32,27 +19,19 @@ init:
   - cmd: appveyor UpdateBuild -Version "%APPVEYOR_REPO_BRANCH%.%APPVEYOR_REPO_COMMIT%.%APPVEYOR_BUILD_NUMBER%"
 
 cache:
-#  - C:\Program Files (x86)\Inno Setup 5
   - C:\Users\appveyor\AppData\Local\pip\cache
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
-#  - C:\Python35 -> requirement*.txt
   - '%APPDATA%\pip\Cache'
 
 install:
-#  - "%PYTHON%/Scripts/pip.exe install --disable-pip-version-check --user --upgrade pip"
-#  - "%PYTHON%/Scripts/pip.exe install --upgrade coverage"
+  - "%PYTHON%/Scripts/pip.exe install --disable-pip-version-check --user --upgrade pip"
+  - "%PYTHON%/Scripts/pip.exe install --upgrade coverage"
   - "%PYTHON%/Scripts/pip.exe install -r requirements.txt"
   - "%PYTHON%/Scripts/pip.exe install -r own_requirements.txt --upgrade"
   - choco install gitversion.portable -pre -y
-#  - nuget install secure-file -ExcludeVersion
-#  - choco install -y InnoSetup curl
-#  - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
-#  - set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
   - choco install gitversion.portable -y
-#  - "where gitversion"
   - git clone --branch=master https://github.com/132nd-etcher/verpatch.git C:\projects\verpatch
-#  - secure-file\tools\secure-file -decrypt vault\secret.pyd.enc -secret %VAULT_SECRET% -out vault\secret.pyd
 
 
 before_build:
@@ -61,11 +40,12 @@ before_build:
   - cmd: cd ..
   - cmd: git clone --branch=master https://github.com/132nd-etcher/utils.git
   - cmd: cd utils
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c utils/tests/.pytest"
-  - cmd: cd ..
-  - cmd: git clone --branch=master https://github.com/132nd-etcher/sltp.git
-  - cmd: cd sltp
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c sltp/tests/.pytest"
+  - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
+  - "%PYTHON%/python -m pytest --cov=utils --cov-config utils/tests/.coveragerc --cov-report xml -c utils/tests/.pytest"
+#  - cmd: cd ..
+#  - cmd: git clone --branch=master https://github.com/132nd-etcher/sltp.git
+#  - cmd: cd sltp
+#  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c sltp/tests/.pytest"
   - cmd: cd ..
   - cmd: cd %APPVEYOR_PROJECT_NAME%
   - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c test/.pytest"
@@ -82,12 +62,6 @@ build_script:
   - set PATH="c:\projects\verpatch";%PATH%
   - "%PYTHON%/python.exe -m PyInstaller src/main.py --noconfirm --onefile --clean --icon src/ui/app.ico --workpath ./build --paths %PYTHON%/Lib/site-packages/PyQt5/Qt/bin --name EMFT --distpath ./dist --windowed --log-level=WARN"
   - cmd: verpatch.exe %APPVEYOR_BUILD_FOLDER%\dist\emft.exe /high %GitVersion_SemVer% /va /pv %GitVersion_SemVer% /s product EMFT /s copyright "2017 etcher" /s build %GitVersion_Sha% /langid 1033 /s PrivateBuild %APPVEYOR_BUILD_NUMBER%
-#  - git config --global credential.helper store
-#  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_PAGES_TOKEN):x-oauth-basic@github.com`n"
-#  - "IF %APPVEYOR_REPO_BRANCH%==master %PYTHON%/Scripts/mkdocs.exe build --clean --strict -v -f .mkdocs.yml"
-#  - "IF %APPVEYOR_REPO_BRANCH%==master git config --global user.email %GH_MAIL%"
-#  - "IF %APPVEYOR_REPO_BRANCH%==master git config --global user.name 132nd-etcher"
-#  - "IF %APPVEYOR_REPO_BRANCH%==master %PYTHON%/Scripts/mkdocs.exe gh-deploy --clean -v -f .mkdocs.yml"
 
 artifacts:
   - path: ./dist/*.exe
