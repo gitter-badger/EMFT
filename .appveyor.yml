@@ -40,7 +40,7 @@ before_build:
   - cmd: cd ..
   - cmd: git clone --branch=master https://github.com/132nd-etcher/utils.git
   - cmd: cd utils
-  - pip install -r requirements
+  - pip install -r requirements.txt
   - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
   - "%PYTHON%/python -m pytest --cov=utils --cov-config utils/tests/.coveragerc --cov-report xml -c utils/tests/.pytest"
 #  - cmd: cd ..
