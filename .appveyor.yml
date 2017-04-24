@@ -50,7 +50,7 @@ build_script:
   - set PATH="c:\projects\verpatch";%PATH%
   - "%PYTHON%/python.exe -m PyInstaller src/main.py --noconfirm --onefile --clean --icon src/ui/app.ico --workpath ./build --paths %PYTHON%/Lib/site-packages/PyQt5/Qt/bin --name EMFT --distpath ./dist --windowed --log-level=WARN"
   - cmd: verpatch.exe %APPVEYOR_BUILD_FOLDER%\dist\emft.exe /high %GitVersion_SemVer% /va /pv %GitVersion_SemVer% /s product EMFT /s copyright "2017 etcher" /s build %GitVersion_Sha% /langid 1033 /s PrivateBuild %APPVEYOR_BUILD_NUMBER%
-  - cmd: ren ./dist/emft.exe ./emft.exe
+  - cmd: ren dist\emft.exe emft.exe
 
 artifacts:
   - path: emft.exe
