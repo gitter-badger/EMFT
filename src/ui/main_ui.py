@@ -148,7 +148,7 @@ def start_ui(test=False):
 
         def test_hook():
             time.sleep(10)
-            nice_exit(0)
+            nice_exit(1)
 
         pool = ThreadPool(1, 'test')
         pool.queue_task(test_hook)
