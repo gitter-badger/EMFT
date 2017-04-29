@@ -28,33 +28,35 @@ cache:
 
 install:
   - "%PYTHON%/Scripts/pip.exe install --disable-pip-version-check --user --upgrade pip"
-  - "%PYTHON%/Scripts/pip.exe install --upgrade coverage"
-  - "%PYTHON%/Scripts/pip.exe install -r requirements.txt"
-  - "%PYTHON%/Scripts/pip.exe install -r own_requirements.txt"
-  - choco install gitversion.portable -pre -y
-  - choco install gitversion.portable -y
-  - git clone --branch=master https://github.com/132nd-etcher/verpatch.git C:\projects\verpatch
-  - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
+#  - "%PYTHON%/Scripts/pip.exe install --upgrade coverage"
+#  - "%PYTHON%/Scripts/pip.exe install -r requirements.txt"
+#  - "%PYTHON%/Scripts/pip.exe install -r own_requirements.txt"
+#  - choco install gitversion.portable -pre -y
+#  - choco install gitversion.portable -y
+#  - git clone --branch=master https://github.com/132nd-etcher/verpatch.git C:\projects\verpatch
+#  - curl -O http://esrg.sourceforge.net/utils_win_up/md5sum/crc32.exe
 
 
 before_build:
   - ps: C:\ProgramData\chocolatey\bin\gitversion /l console /output buildserver /updateassemblyinfo /b (get-item env:APPVEYOR_REPO_BRANCH).Value
-  - cmd: appveyor UpdateBuild -Version %GitVersion_InformationalVersion%.%APPVEYOR_BUILD_NUMBER%
-  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c test/.pytest"
-  - "%PYTHON%/Scripts/pip.exe install git+https://github.com/132nd-etcher/ocular.py.git"
-  - "%PYTHON%/Scripts/ocular.exe --access-token %SCRUTINIZER_TOKEN%"
-  - "%PYTHON%/Scripts/pip.exe install codacy-coverage"
-  - "%PYTHON%/Scripts/python-codacy-coverage.exe -r coverage.xml"
-#  - "%PYTHON%/Scripts/pip.exe install coveralls"
-#  - "%PYTHON%/Scripts/coveralls.exe"
-#  - "%PYTHON%/Scripts/pip.exe install codecov"
-#  - "%PYTHON%/Scripts/codecov.exe"
+#  - cmd: appveyor UpdateBuild -Version %GitVersion_InformationalVersion%.%APPVEYOR_BUILD_NUMBER%
+#  - "%PYTHON%/python -m pytest --cov=src --cov-config .coveragerc --cov-report xml -c test/.pytest"
+#  - "%PYTHON%/Scripts/pip.exe install git+https://github.com/132nd-etcher/ocular.py.git"
+#  - "%PYTHON%/Scripts/ocular.exe --access-token %SCRUTINIZER_TOKEN%"
+#  - "%PYTHON%/Scripts/pip.exe install codacy-coverage"
+#  - "%PYTHON%/Scripts/python-codacy-coverage.exe -r coverage.xml"
+##  - "%PYTHON%/Scripts/pip.exe install coveralls"
+##  - "%PYTHON%/Scripts/coveralls.exe"
+##  - "%PYTHON%/Scripts/pip.exe install codecov"
+##  - "%PYTHON%/Scripts/codecov.exe"
 
 build_script:
-  - set PATH="c:\projects\verpatch";%PATH%
-  - "%PYTHON%/python.exe -m PyInstaller src/main.py --noconfirm --onefile --clean --icon src/ui/app.ico --workpath ./build --paths %PYTHON%/Lib/site-packages/PyQt5/Qt/bin --name EMFT --distpath ./dist --windowed --log-level=WARN"
-  - cmd: verpatch.exe %APPVEYOR_BUILD_FOLDER%\dist\emft.exe /high %GitVersion_SemVer% /va /pv %GitVersion_SemVer% /s product EMFT /s copyright "2017 etcher" /s build %GitVersion_Sha% /langid 1033 /s PrivateBuild %APPVEYOR_BUILD_NUMBER%
-  - cmd: move dist\emft.exe emft.exe
+#  - set PATH="c:\projects\verpatch";%PATH%
+#  - "%PYTHON%/python.exe -m PyInstaller src/main.py --noconfirm --onefile --clean --icon src/ui/app.ico --workpath ./build --paths %PYTHON%/Lib/site-packages/PyQt5/Qt/bin --name EMFT --distpath ./dist --windowed --log-level=WARN"
+#  - cmd: verpatch.exe %APPVEYOR_BUILD_FOLDER%\dist\emft.exe /high %GitVersion_SemVer% /va /pv %GitVersion_SemVer% /s product EMFT /s copyright "2017 etcher" /s build %GitVersion_Sha% /langid 1033 /s PrivateBuild %APPVEYOR_BUILD_NUMBER%
+#  - cmd: move dist\emft.exe emft.exe
+  - cmd: git tag %GitVersion_SemVer%
+  - cmd: git push origin %GitVersion_SemVer%
 
 artifacts:
   - path: emft.exe
@@ -82,14 +84,6 @@ deploy:
       secure: T9LMiMzikVwlfnYhxlIpzhmfotDN75SUmEv1FSGLHZ/vMHMCMT3SEapSOH1iPdaD
     on:
       branch: master
-      appveyor_repo_tag: false
-  - provider: GitHub
-    draft: false
-    prerelease: false
-    tag: $(GitVersion_SemVer)
-    auth_token:
-      secure: T9LMiMzikVwlfnYhxlIpzhmfotDN75SUmEv1FSGLHZ/vMHMCMT3SEapSOH1iPdaD
-    on:
       appveyor_repo_tag: false
 
 skip_tags: true
