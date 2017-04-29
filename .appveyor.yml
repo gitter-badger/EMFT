@@ -83,6 +83,14 @@ deploy:
     on:
       branch: master
       appveyor_repo_tag: false
+  - provider: GitHub
+    draft: false
+    prerelease: false
+    tag: $(GitVersion_SemVer)
+    auth_token:
+      secure: T9LMiMzikVwlfnYhxlIpzhmfotDN75SUmEv1FSGLHZ/vMHMCMT3SEapSOH1iPdaD
+    on:
+      appveyor_repo_tag: false
 
 skip_tags: true
 
